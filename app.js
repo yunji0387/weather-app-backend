@@ -11,7 +11,7 @@ const app = express();
 
 // app.use(cors({ origin: "https://sky-cast-854836ef4892.herokuapp.com" }));
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "https://sky-cast-854836ef4892.herokuapp.com")
+    res.header("Access-Control-Allow-Origin", "*")
     res.header(
       "Access-Control-Allow-Headers",
       "Origin, X-Requested, Content-Type, Accept Authorization"
