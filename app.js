@@ -9,7 +9,23 @@ const weatherForecast = require(__dirname + "/logic/weatherForecast.js");
 
 const app = express();
 
-app.use(cors({ origin: "https://sky-cast-854836ef4892.herokuapp.com" }));
+// app.use(cors({ origin: "https://sky-cast-854836ef4892.herokuapp.com" }));
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "https://sky-cast-854836ef4892.herokuapp.com")
+    res.header(
+      "Access-Control-Allow-Headers",
+      "Origin, X-Requested, Content-Type, Accept Authorization"
+    )
+    if (req.method === "OPTIONS") {
+      res.header(
+        "Access-Control-Allow-Methods",
+        "POST, PUT, PATCH, GET, DELETE"
+      )
+      return res.status(200).json({})
+    }
+    next()
+  });
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
