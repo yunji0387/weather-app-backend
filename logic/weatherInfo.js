@@ -34,7 +34,6 @@ async function updateWeatherInfoDB() {
         );
         if (updatedWeather) {
           console.log("Weather info in MongoDB updated successfully.");
-          //console.log("Updated stock info:", updatedStock);
         } else {
           console.log("Error, Weather info in MongoDB failed to update or document not found. please check code in weatherInfo.js function: updateWeatherInfoDB.");
         }
@@ -63,7 +62,6 @@ async function updateWeatherInfoDB() {
     
             res.on("end", async function() {
               const weatherData = JSON.parse(data);
-              //console.log("weatherData: " + JSON.stringify(weatherData));
               if(weatherData.cod === 200){
                 result = {
                   cityName: weatherData.name,
@@ -99,7 +97,7 @@ async function updateWeatherInfoDB() {
     await updateWeatherInfoDB();
     let currWeather;
     try {
-      await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", {useNewURLParser: true});
+      await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", {useNewUrlParser: true});
       currWeather = await Weather.findOne({});
       mongoose.connection.close();
     } catch (err) {
