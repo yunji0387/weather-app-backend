@@ -13,7 +13,7 @@ app.use(cors({ origin: "https://sky-cast-854836ef4892.herokuapp.com" }));
 
 require("dotenv").config();
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 app.use(express.static("public"));
 
 // app.get("/", async function(req, res){
