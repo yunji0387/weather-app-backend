@@ -9,7 +9,7 @@ const weatherForecast = require(__dirname + "/logic/weatherForecast.js");
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:3001" }));
+app.use(cors({ origin: "https://sky-cast-854836ef4892.herokuapp.com/" }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 

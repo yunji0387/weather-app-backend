@@ -52,12 +52,12 @@ async function updateWeatherForecastDB() {
         await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", { useNewUrlParser: true });
         if (Object.keys(toUpdate).length > 0) {
             const updatedWeather = await WeatherForecast.findOneAndUpdate(
-                { cityName: toUpdate.cityName }, // Filter to find the document to update
+                { cityName: toUpdate.cityName },
                 {
                     lastUpdate: toUpdate.lastUpdate,
                     forecasts: toUpdate.forecasts
-                }, // Fields and values to update
-                { upsert: true, new: true } // Return the modified document instead of the original
+                }, 
+                { upsert: true, new: true }
             );
             if (updatedWeather) {
                 console.log("Weather forecast in MongoDB updated successfully.");
@@ -89,7 +89,6 @@ async function getWeatherForecastHTTP(date) {
 
                 res.on("end", async function () {
                     const weatherData = JSON.parse(data);
-                    // console.log("data cod: " + weatherData.cod + "--" + (weatherData.cod === "200"));
                     if (weatherData.cod === "200") {
                         result = {
                             cityName: weatherData.city.name,
@@ -106,8 +105,6 @@ async function getWeatherForecastHTTP(date) {
                                 clouds: forecast.clouds,
                                 wind: forecast.wind,
                                 visibility: forecast.visibility,
-                                //pop: forecast.pop,
-                                //sys: forecast.sys,
                                 dt_txt: forecast.dt_txt,
                                 iconURL: getWeatherIcon(forecast.weather[0].icon)
                             })),
@@ -115,17 +112,16 @@ async function getWeatherForecastHTTP(date) {
                         console.log("Weather forecast information from API" + " successfully requested.");
                     } else {
                         console.log("Error, Weather forecast information from API" + " failed to requested. Reason unknown, please check your code in weatherForecast.js function : getWeatherForecastHTTP.");
-                        //console.log(weatherData);
                     }
-                    resolve(result); // Resolve the promise with the result
+                    resolve(result);
                 });
             } else {
                 result = {};
                 console.log("Error, Weather forecast information from API" + " failed to requested. Error status code : " + res.statusCode);
-                resolve(result); // Resolve the promise with the result
+                resolve(result);
             }
         }).on("error", function (error) {
-            reject(error); // Reject the promise if an error occurs
+            reject(error);
         });
     });
 }
