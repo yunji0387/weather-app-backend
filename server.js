@@ -40,10 +40,10 @@ app.post("/", async function(req, res){
         // if (clientKey === process.env.ACCESS_KEY) {
             const currentTime = new Date();
             const weatherCurrData = await weatherInfo.getWeatherInfoDB(currentTime);
-            const weatherForecastData = await weatherForecast.getWeatherForecastDB(currentTime);
+            //const weatherForecastData = await weatherForecast.getWeatherForecastDB(currentTime);
             const weatherData = {
                 curr: weatherCurrData,
-                forecast: weatherForecastData
+                //forecast: weatherForecastData
             };
             res.json(weatherData);
         // } else {
