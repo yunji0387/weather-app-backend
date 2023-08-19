@@ -49,7 +49,8 @@ app.post("/", async function(req, res){
             res.json(weatherData);
         } else {
             // If the key doesn't match, return a 401 Unauthorized status
-            res.status(401).json({ error: "Unauthorized access" });
+            // res.status(401).json({ error: "Unauthorized access", check: clientKey });
+            res.json({ error: "Unauthorized access", check: clientKey });
         }
     } catch (error) {
         console.error(error);
