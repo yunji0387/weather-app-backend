@@ -37,6 +37,8 @@ app.post("/", async function(req, res){
         // Get the key from the request body
         const clientKey = req.body.key;
         const checkBool = (clientKey === process.env.ACCESS_KEY);
+        const t1 = typeof(clientKey);
+        const t2 = typeof(process.env.ACCESS_KEY);
         console.log(req.body);
         // Check if the clientKey matches the secretKey
         if (clientKey === process.env.ACCESS_KEY) {
@@ -51,7 +53,7 @@ app.post("/", async function(req, res){
         } else {
             // If the key doesn't match, return a 401 Unauthorized status
             // res.status(401).json({ error: "Unauthorized access", check: clientKey });
-            res.json({ error: "Unauthorized access", check: clientKey, bool: checkBool });
+            res.json({ error: "Unauthorized access", check: clientKey, bool: checkBool, type1: t1, type2: t2 });
         }
     } catch (error) {
         console.error(error);
