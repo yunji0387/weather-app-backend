@@ -10,35 +10,47 @@ const weatherForecast = require(__dirname + "/logic/weatherForecast.js");
 const app = express();
 
 app.use(cors({ origin: "https://sky-cast-854836ef4892.herokuapp.com" }));
-// app.use((req, res, next) => {
-//     res.header("Access-Control-Allow-Origin", "*")
-//     res.header(
-//       "Access-Control-Allow-Headers",
-//       "Origin, X-Requested, Content-Type, Accept Authorization"
-//     )
-//     if (req.method === "OPTIONS") {
-//       res.header(
-//         "Access-Control-Allow-Methods",
-//         "POST, PUT, PATCH, GET, DELETE"
-//       )
-//       return res.status(200).json({})
-//     }
-//     next()
-//   });
 
+require("dotenv").config();
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.static("public"));
 
-app.get("/", async function(req, res){
+// app.get("/", async function(req, res){
+//     try {
+//         const currentTime = new Date();
+//         const weatherCurrData = await weatherInfo.getWeatherInfoDB(currentTime);
+//         const weatherForecastData = await weatherForecast.getWeatherForecastDB(currentTime);
+//         const weatherData = {
+//             curr: weatherCurrData,
+//             forecast: weatherForecastData
+//         };
+//         res.json(weatherData);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Failed to fetch weather data." });
+//     }
+// });
+
+app.post("/", async function(req, res){
     try {
-        const currentTime = new Date();
-        const weatherCurrData = await weatherInfo.getWeatherInfoDB(currentTime);
-        const weatherForecastData = await weatherForecast.getWeatherForecastDB(currentTime);
-        const weatherData = {
-            curr: weatherCurrData,
-            forecast: weatherForecastData
-        };
-        res.json(weatherData);
+        // Get the key from the request body
+        const clientKey = req.body.key;
+        console.log(req.body);
+        // Check if the clientKey matches the secretKey
+        if (clientKey === process.env.ACCESS_KEY) {
+            const currentTime = new Date();
+            const weatherCurrData = await weatherInfo.getWeatherInfoDB(currentTime);
+            const weatherForecastData = await weatherForecast.getWeatherForecastDB(currentTime);
+            const weatherData = {
+                curr: weatherCurrData,
+                forecast: weatherForecastData
+            };
+            res.json(weatherData);
+        } else {
+            // If the key doesn't match, return a 401 Unauthorized status
+            res.status(401).json({ error: "Unauthorized access" });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to fetch weather data." });
