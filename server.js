@@ -2,6 +2,7 @@
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const ejs = require("ejs");
 const cors = require("cors"); 
 const weatherInfo = require(__dirname + "/logic/weatherInfo.js");
 const weatherForecast = require(__dirname + "/logic/weatherForecast.js");
@@ -11,6 +12,7 @@ const app = express();
 
 app.use(cors({ origin: "https://sky-cast-854836ef4892.herokuapp.com" }));
 
+app.set("view engine", "ejs");
 require("dotenv").config();
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(bodyParser.json());
@@ -31,6 +33,10 @@ app.use(express.static("public"));
 //         res.status(500).json({ error: "Failed to fetch weather data." });
 //     }
 // });
+
+app.get("/", async function(req,res){
+    res.render("home");
+});
 
 app.post("/", async function(req, res){
     try {

@@ -1,0 +1,181 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Add a gray background color with some padding */
+body {
+  font-family: Arial;
+  padding: 20px;
+  background: #f1f1f1;
+}
+
+/* Header below */
+.header {
+  background-color: black;
+  width: 100%;
+  height: 75px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.app-logo-container {
+  width: 100%;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.app-logo-container:hover {
+  cursor: default;
+}
+
+.app-logo-container:hover .app-logo-text {
+  color: rgb(255, 207, 105);
+  -webkit-text-stroke-color: rgb(209, 136, 41);
+  text-shadow: 3px 0 rgb(209, 136, 41);
+}
+
+.app-logo-img-container {
+  height: 70px;
+  width: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.1s;
+}
+
+.app-logo-img {
+  height: 50px;
+  width: 50px;
+  animation: ccw-icon-rotation 25s infinite linear;
+}
+
+@keyframes ccw-icon-rotation {
+  from {
+    transform: rotate(359deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+.app-logo-text {
+  font-size: 50px;
+  font-family: "Passion One", cursive;
+  -webkit-text-stroke-width: 2px;
+  color: white;
+  -webkit-text-stroke-color: darkgrey;
+  text-shadow: 3px 0 darkgrey;
+  letter-spacing: 0.2rem;
+}
+
+/* Header above */
+
+/* Footer social icon below */
+.footer {
+  margin-top: 20px;
+  width: 100%;
+  background: white;
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.social-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  height: 60px;
+}
+
+.footer ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.social-icon-img-size {
+  height: 40px;
+  width: 40px;
+}
+
+.social-icon__link {
+  font-size: 2rem;
+  color: black;
+  display: inline-block;
+  transition: 0.2s;
+  margin: 0px 10px;
+  margin-top: 15px;
+}
+
+.social-icon__link:hover {
+  transform: translateY(-5px);
+}
+
+.footer p {
+    margin: 10px 0px;
+    margin-top: 0px;
+}
+/* Footer social icon above */
+
+/* Main below */
+.main-content-container {
+  margin-top: 20px;
+  /* background-color: pink; */
+  width: 100%;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-content {
+  /* background-color: aqua; */
+}
+
+.main-content h1 {
+    margin-top: 0;
+}
+
+.main-content p {
+    padding-left: 25px;
+}
+
+.main-content .button-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-content .button-container .button {
+    background-color: black;
+    border-radius: 15px;
+    height: 35px;
+    width: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-content .button-container .button:hover {
+    background-color: rgb(36, 36, 36);
+    border: 3px solid grey;
+    cursor: pointer;
+}
+
+.main-content .button-container .button a {
+    padding: 0;
+    color: #f1f1f1;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+}
+/* Main above */
