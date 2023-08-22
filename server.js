@@ -16,24 +16,10 @@ app.use(cors({ origin: "*" }));
 app.set("view engine", "ejs");
 require("dotenv").config();
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
-app.use(express.static("public"));
 
-// app.get("/", async function(req, res){
-//     try {
-//         const currentTime = new Date();
-//         const weatherCurrData = await weatherInfo.getWeatherInfoDB(currentTime);
-//         const weatherForecastData = await weatherForecast.getWeatherForecastDB(currentTime);
-//         const weatherData = {
-//             curr: weatherCurrData,
-//             forecast: weatherForecastData
-//         };
-//         res.json(weatherData);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Failed to fetch weather data." });
-//     }
-// });
+app.use(bodyParser.json());
+
+app.use(express.static("public"));
 
 app.get("/", async function(req,res){
     res.render("home");
@@ -44,7 +30,7 @@ app.post("/", async function(req, res){
         // Get the key from the request body
         const clientKey = req.body.key;
         // Check if the clientKey matches the secretKey
-        // if (clientKey === process.env.ACCESS_KEY) {
+        if (clientKey === process.env.ACCESS_KEY) {
             const currentTime = new Date();
             const weatherCurrData = await weatherInfo.getWeatherInfoDB(currentTime);
             const weatherForecastData = await weatherForecast.getWeatherForecastDB(currentTime);
@@ -53,10 +39,10 @@ app.post("/", async function(req, res){
                 forecast: weatherForecastData
             };
             res.json(weatherData);
-        // } else {
+        } else {
             // If the key doesn't match, return a 401 Unauthorized status
-            // res.status(401).json({ error: "Unauthorized access", check: clientKey });
-        // }
+            res.status(401).json({ error: "Unauthorized access", check: clientKey });
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to fetch weather data." });
