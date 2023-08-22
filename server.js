@@ -25,7 +25,7 @@ app.get("/", async function(req,res){
     res.render("home");
 });
 
-app.post("/", async function(req, res){
+app.post("/data", async function(req, res){
     try {
         // Get the key from the request body
         const clientKey = req.body.key;

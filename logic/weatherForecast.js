@@ -5,8 +5,24 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 
 const weatherForecastSchema = new mongoose.Schema({
+    cod: Number,
+    message: Number,
+    cnt: Number,
     cityName: String,
     lastUpdate: Date,
+    city: {
+        id: Number,
+        name: String,
+        coord: {
+            lat: Number,
+            lon: Number,
+        },
+        country: String,
+        population: Number,
+        timezone: Number,
+        sunrise: Number,
+        sunset: Number,
+    },
     forecasts: [
         {
             dt: Number,
@@ -38,9 +54,9 @@ const weatherForecastSchema = new mongoose.Schema({
                 pod: String,
             },
             dt_txt: String,
-            iconURL: String
+            iconURL: String,
         },
-    ]
+    ],
 });
 
 const WeatherForecast = mongoose.model("WeatherForecast", weatherForecastSchema);
@@ -52,17 +68,21 @@ async function updateWeatherForecastDB() {
         await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", { useNewUrlParser: true });
         if (Object.keys(toUpdate).length > 0) {
             const updatedWeather = await WeatherForecast.findOneAndUpdate(
-                { cityName: toUpdate.cityName },
+                { cityName: toUpdate.city.name }, // Use city name as a filter
                 {
+                    cod: parseInt(toUpdate.cod),
+                    message: toUpdate.message,
+                    cnt: toUpdate.cnt,
                     lastUpdate: toUpdate.lastUpdate,
-                    forecasts: toUpdate.forecasts
-                }, 
+                    city: toUpdate.city,
+                    forecasts: toUpdate.forecasts,
+                },
                 { upsert: true, new: true }
             );
             if (updatedWeather) {
                 console.log("Weather forecast in MongoDB updated successfully.");
             } else {
-                console.log("Error, Weather forecast in MongoDB failed to update or document not found. please check code in weatherForecast.js function: updateWeatherForecastDB.");
+                console.log("Error, Weather forecast in MongoDB failed to update or document not found. Please check the code in weatherForecast.js function: updateWeatherForecastDB.");
             }
         }
         await mongoose.connection.close();
@@ -93,6 +113,10 @@ async function getWeatherForecastHTTP(date) {
                         result = {
                             cityName: weatherData.city.name,
                             lastUpdate: date,
+                            cod: parseInt(weatherData.cod),
+                            message: weatherData.message,
+                            cnt: weatherData.cnt,
+                            city: weatherData.city,
                             forecasts: weatherData.list.map((forecast) => ({
                                 dt: forecast.dt,
                                 temp: forecast.main.temp,

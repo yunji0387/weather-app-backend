@@ -57,7 +57,7 @@ const weatherSchema = new mongoose.Schema({
   },
   dt: Number,
   sys: {
-    type: Number,
+    typeCode: Number,
     id: Number,
     country: String,
     sunrise: Number,
@@ -123,7 +123,13 @@ async function updateWeatherInfoDB() {
           rain: toUpdate.rain,
           clouds: toUpdate.clouds,
           dt: toUpdate.dt,
-          sys: toUpdate.sys,
+          sys: {
+            typeCode: toUpdate.sys.type,
+            id: toUpdate.sys.id,
+            country: toUpdate.sys.country,
+            sunrise: toUpdate.sys.sunrise,
+            sunset: toUpdate.sys.sunset,
+          },
           timezone: toUpdate.timezone,
           id: toUpdate.id,
           cod: toUpdate.cod
@@ -220,6 +226,8 @@ async function getWeatherInfoHTTP(date) {
         id: weatherData.id,
         cod: weatherData.cod
       };
+      console.log("------------------------");
+      console.log(result);
       console.log("Weather information from API successfully requested.");
       return result;
     } else {
