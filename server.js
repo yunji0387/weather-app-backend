@@ -6,6 +6,7 @@ const ejs = require("ejs");
 const cors = require("cors"); 
 const weatherInfo = require(__dirname + "/logic/weatherInfo.js");
 const weatherForecast = require(__dirname + "/logic/weatherForecast.js");
+const sampleJson = require(__dirname + "/logic/sampleAPI.js");
 
 
 const app = express();
@@ -23,6 +24,10 @@ app.use(express.static("public"));
 
 app.get("/", async function(req,res){
     res.render("home");
+});
+
+app.get("/sample", async function(req, res){
+    res.json(sampleJson.getSampleJson());
 });
 
 app.post("/data", async function(req, res){
