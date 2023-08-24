@@ -61,9 +61,9 @@ const weatherSchema = new mongoose.Schema({
 
 const Weather = mongoose.model("Weather", weatherSchema);
 
-async function updateWeatherInfoDB() {
+async function updateWeatherInfoDB(city) {
   let curr = new Date();
-  const toUpdate = await getWeatherInfoHTTP(curr);
+  const toUpdate = await getWeatherInfoHTTP(curr, city);
   try {
     await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", { useNewUrlParser: true });
     if (Object.keys(toUpdate).length > 0) {
@@ -110,8 +110,8 @@ async function updateWeatherInfoDB() {
   }
 }
 
-async function getWeatherInfoHTTP(date) {
-  const weatherAPI_URL = "https://api.openweathermap.org/data/2.5/weather?q=Winnipeg&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
+async function getWeatherInfoHTTP(date, city) {
+  const weatherAPI_URL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
 
   // Using async/await to simplify the code
   try {
@@ -164,12 +164,12 @@ function getWeatherIcon(iconID) {
   return result_URL;
 }
 
-async function getWeatherInfoDB(date) {
-  await updateWeatherInfoDB();
+async function getWeatherInfoDB(city) {
+  await updateWeatherInfoDB(city);
   let currWeather;
   try {
     await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", { useNewUrlParser: true });
-    currWeather = await Weather.findOne({});
+    currWeather = await Weather.findOne({ cityName: city });
     mongoose.connection.close();
   } catch (err) {
     console.error(err);

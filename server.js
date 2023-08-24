@@ -3,7 +3,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const ejs = require("ejs");
-const cors = require("cors"); 
+const cors = require("cors");
 const weatherInfo = require(__dirname + "/logic/weatherInfo.js");
 const weatherForecast = require(__dirname + "/logic/weatherForecast.js");
 const sampleJson = require(__dirname + "/logic/sampleAPI.js");
@@ -22,23 +22,26 @@ app.use(bodyParser.json());
 
 app.use(express.static("public"));
 
-app.get("/", async function(req,res){
+app.get("/", async function (req, res) {
     res.render("home");
 });
 
-app.get("/sample", async function(req, res){
+app.get("/sample", async function (req, res) {
     res.json(sampleJson.getSampleJson());
 });
 
-app.post("/data", async function(req, res){
+app.post("/data", async function (req, res) {
     try {
         // Get the key from the request body
         const clientKey = req.body.key;
+        // const testAuth = req.headers.key;
+        //console.log(testAuth);
+        const city = req.query.city;
+
         // Check if the clientKey matches the secretKey
         if (clientKey === process.env.ACCESS_KEY) {
-            const currentTime = new Date();
-            const weatherCurrData = await weatherInfo.getWeatherInfoDB(currentTime);
-            const weatherForecastData = await weatherForecast.getWeatherForecastDB(currentTime);
+            const weatherCurrData = await weatherInfo.getWeatherInfoDB(city);
+            const weatherForecastData = await weatherForecast.getWeatherForecastDB(city);
             const weatherData = {
                 curr: weatherCurrData,
                 forecast: weatherForecastData
@@ -54,6 +57,6 @@ app.post("/data", async function(req, res){
     }
 });
 
-app.listen(process.env.PORT || 3000, function(){
+app.listen(process.env.PORT || 3000, function () {
     console.log("Server started on port 3000");
 });
