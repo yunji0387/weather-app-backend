@@ -93,7 +93,10 @@ async function updateWeatherForecastDB(city) {
 }
 
 async function getWeatherForecastHTTP(date, city) {
-    const weatherAPI_URL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
+    const weatherAPI_URL = "https://api.openweathermap.org/data/2.5/forecast?q=Winnipeg&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
+    if (city !== undefined) {
+        weatherAPI_URL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
+    }
 
     //using Promise will ensure the result will returned after the "https.get" request and the response is recieved.
     return new Promise((resolve, reject) => {
@@ -157,6 +160,9 @@ function getWeatherIcon(iconID) {
 
 async function getWeatherForecastDB(city) {
     await updateWeatherForecastDB(city);
+    if (city === undefined) {
+        city = "Winnipeg"
+    }
     let currWeather;
     try {
         await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", { useNewUrlParser: true });
