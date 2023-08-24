@@ -166,7 +166,7 @@ async function getWeatherForecastDB(city) {
     let currWeather;
     try {
         await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", { useNewUrlParser: true });
-        currWeather = await WeatherForecast.findOne({ cityName: city });
+        currWeather = await WeatherForecast.findOne({ cityName: {$regex: new RegExp(city, 'i')} });
         mongoose.connection.close();
     } catch (err) {
         console.error(err);
