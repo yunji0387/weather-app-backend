@@ -111,7 +111,7 @@ async function updateWeatherInfoDB(city) {
 }
 
 async function getWeatherInfoHTTP(date, city) {
-  const weatherAPI_URL = "https://api.openweathermap.org/data/2.5/weather?q=Winnipeg&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
+  let weatherAPI_URL = "https://api.openweathermap.org/data/2.5/weather?q=Winnipeg&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
   if (city !== undefined) {
     weatherAPI_URL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
   }
@@ -147,8 +147,8 @@ async function getWeatherInfoHTTP(date, city) {
         id: weatherData.id,
         cod: weatherData.cod
       };
-      console.log("------------------------");
-      console.log(result);
+      // console.log("------------------------");
+      // console.log(result);
       console.log("Weather information from API successfully requested.");
       return result;
     } else {
@@ -175,7 +175,7 @@ async function getWeatherInfoDB(city) {
   let currWeather;
   try {
     await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherDB", { useNewUrlParser: true });
-    currWeather = await Weather.findOne({ cityName: city });
+    currWeather = await Weather.findOne({ cityName: {$regex: new RegExp(city, 'i')} });
     mongoose.connection.close();
   } catch (err) {
     console.error(err);

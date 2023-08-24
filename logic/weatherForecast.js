@@ -93,7 +93,7 @@ async function updateWeatherForecastDB(city) {
 }
 
 async function getWeatherForecastHTTP(date, city) {
-    const weatherAPI_URL = "https://api.openweathermap.org/data/2.5/forecast?q=Winnipeg&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
+    let weatherAPI_URL = "https://api.openweathermap.org/data/2.5/forecast?q=Winnipeg&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
     if (city !== undefined) {
         weatherAPI_URL = "https://api.openweathermap.org/data/2.5/forecast?q=" + city + "&appid=" + process.env.WEATHER_API_KEY + "&units=metric";
     }
