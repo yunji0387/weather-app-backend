@@ -8,5 +8,6 @@
 
 ## Technology Used
 - Node.js, Express.js
-- ejs, HTML, CSS
-- git/GitHub, heroku
+- Ejs, HTML, CSS
+- MongoDB, Mongoose
+- Git/GitHub, Heroku
