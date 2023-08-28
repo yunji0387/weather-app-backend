@@ -7,7 +7,8 @@ const cors = require("cors");
 const weatherInfo = require(__dirname + "/logic/weatherInfo.js");
 const weatherForecast = require(__dirname + "/logic/weatherForecast.js");
 const sampleJson = require(__dirname + "/logic/sampleAPI.js");
-
+const weatherCurr = require(__dirname + "/logic/weatherCurrentAPI.js");
+const weatherForecast2 = require(__dirname + "/logic/weatherForecastAPI.js");
 
 const app = express();
 
@@ -30,18 +31,47 @@ app.get("/sample", async function (req, res) {
     res.json(sampleJson.getSampleJson());
 });
 
-app.post("/data", async function (req, res) {
+// app.post("/data", async function (req, res) {
+//     try {
+//         // Get the key from the request body
+//         const clientKey = req.body.key;
+//         // const testAuth = req.headers.key;
+//         //console.log(testAuth);
+//         const city = req.query.city;
+
+//         // Check if the clientKey matches the secretKey
+//         if (clientKey === process.env.ACCESS_KEY) {
+//             const weatherCurrData = await weatherInfo.getWeatherInfoDB(city);
+//             const weatherForecastData = await weatherForecast.getWeatherForecastDB(city);
+//             const weatherData = {
+//                 curr: weatherCurrData,
+//                 forecast: weatherForecastData
+//             };
+//             res.json(weatherData);
+//         } else {
+//             // If the key doesn't match, return a 401 Unauthorized status
+//             res.status(401).json({ error: "Unauthorized access", check: clientKey });
+//         }
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Failed to fetch weather data." });
+//     }
+// });
+
+app.post("/data/weather", async function (req, res) {
     try {
         // Get the key from the request body
         const clientKey = req.body.key;
         // const testAuth = req.headers.key;
         //console.log(testAuth);
-        const city = req.query.city;
+        // const city = req.query.city;
 
         // Check if the clientKey matches the secretKey
         if (clientKey === process.env.ACCESS_KEY) {
-            const weatherCurrData = await weatherInfo.getWeatherInfoDB(city);
-            const weatherForecastData = await weatherForecast.getWeatherForecastDB(city);
+            const lat = req.query.lat;
+            const lon = req.query.lon;
+            const weatherCurrData = await weatherCurr.getWeatherCurrDB(lat, lon);
+            const weatherForecastData = await weatherForecast2.getWeatherForecastDB(lat, lon);
             const weatherData = {
                 curr: weatherCurrData,
                 forecast: weatherForecastData
