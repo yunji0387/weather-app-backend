@@ -64,34 +64,39 @@ const WeatherForecastInfo = mongoose.model("WeatherForecastInfo", weatherForecas
 async function updateWeatherForecastDB(lat, lon) {
     let curr = new Date();
     const toUpdate = await getWeatherForecastHTTP(curr, lat, lon);
-    try {
-        await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherGeocodingDB", { useNewUrlParser: true });
-        if (Object.keys(toUpdate).length > 0) {
-            const updatedWeather = await WeatherForecastInfo.findOneAndUpdate(
-                {
-                    'city.coord.lon': toUpdate.city.coord.lon,
-                    'city.coord.lat': toUpdate.city.coord.lat
-                }, // Use lat and lon as a filter
-                {
-                    cod: parseInt(toUpdate.cod),
-                    message: toUpdate.message,
-                    cnt: toUpdate.cnt,
-                    lastUpdate: toUpdate.lastUpdate,
-                    city: toUpdate.city,
-                    forecasts: toUpdate.forecasts,
-                },
-                { upsert: true, new: true }
-            );
-            if (updatedWeather) {
-                console.log("Weather forecast in MongoDB updated successfully.");
-            } else {
-                console.log("Error, Weather forecast in MongoDB failed to update or document not found. Please check the code in weatherForecastAPI.js function: updateWeatherForecastDB.");
+    if (lat !== undefined && lon !== undefined) {
+        try {
+            await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherGeocodingDB", { useNewUrlParser: true });
+            if (Object.keys(toUpdate).length > 0) {
+                // const tolerance = 0.0001; // coodinates decimal tolerance
+                const updatedWeather = await WeatherForecastInfo.findOneAndUpdate(
+                    {
+                        'city.coord.lon': lon,
+                        'city.coord.lat': lat
+                        // 'city.coord.lon': { $gte: lon - tolerance, $lte: lon + tolerance },
+                        // 'city.coord.lat': { $gte: lat - tolerance, $lte: lat + tolerance }
+                    }, // Use lat and lon as a filter
+                    {
+                        cod: parseInt(toUpdate.cod),
+                        message: toUpdate.message,
+                        cnt: toUpdate.cnt,
+                        lastUpdate: toUpdate.lastUpdate,
+                        city: toUpdate.city,
+                        forecasts: toUpdate.forecasts,
+                    },
+                    { upsert: true, new: true }
+                );
+                if (updatedWeather) {
+                    console.log("Weather forecast in MongoDB updated successfully.");
+                } else {
+                    console.log("Error, Weather forecast in MongoDB failed to update or document not found. Please check the code in weatherForecastAPI.js function: updateWeatherForecastDB.");
+                }
             }
+            await mongoose.connection.close();
+        } catch (error) {
+            console.error(error);
+            await mongoose.connection.close();
         }
-        await mongoose.connection.close();
-    } catch (error) {
-        console.error(error);
-        await mongoose.connection.close();
     }
 }
 
@@ -172,6 +177,7 @@ async function getWeatherForecastDB(lat, lon) {
         currLat = 49.8955;
         currLon = -97.1385;
     }
+
     let currWeather;
     try {
         await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherGeocodingDB", { useNewUrlParser: true });
@@ -179,6 +185,12 @@ async function getWeatherForecastDB(lat, lon) {
             'city.coord.lon': currLon,
             'city.coord.lat': currLat
         });
+        // const tolerance = 0.0001; // coodinates decimal tolerance
+
+        // currWeather = await WeatherForecastInfo.findOne({
+        //     'city.coord.lon': { $gte: currLon - tolerance, $lte: currLon + tolerance },
+        //     'city.coord.lat': { $gte: currLat - tolerance, $lte: currLat + tolerance }
+        // });
         mongoose.connection.close();
     } catch (err) {
         console.error(err);
