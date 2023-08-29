@@ -1,9 +1,13 @@
 # Sky Cast - Weather App Backend
 ## [Web Link](https://sky-cast-backend-b4e180440fb6.herokuapp.com/) | The web takes around 20-30 seconds to generate.
 
-## Purposes
+## Overview
+
+Sky Cast Backend is the server-side component of the Sky Cast Weather App. It serves the purpose of fetching weather data from the OpenWeather API, storing it in a MongoDB database, and providing custom weather JSON data to the [Sky Cast Frontend Page](https://github.com/yunji0387/weather-app).
+
+## Features
 - Calling OpenWeather REST API for current weather and forecast weather
-- Storing weather JSON data to MONGODB
+- Storing weather JSON data to MongoDB
 - Return custom weather JSON data to [Sky Cast Frontend Page](https://github.com/yunji0387/weather-app) 
 
 ## Technology Stack
