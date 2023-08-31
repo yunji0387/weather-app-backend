@@ -5,6 +5,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 
 const weatherCurrentInfoSchema = new mongoose.Schema({
+    addressName: String,
     cityName: String,
     lastUpdate: Date,
     temp: Number,
@@ -61,7 +62,7 @@ const weatherCurrentInfoSchema = new mongoose.Schema({
 
 const WeatherCurrentInfo = mongoose.model("WeatherCurrentInfo", weatherCurrentInfoSchema);
 
-async function updateWeatherCurrDB(lat, lon) {
+async function updateWeatherCurrDB(lat, lon, address) {
     let curr = new Date();
     const toUpdate = await getWeatherCurrHTTP(curr, lat, lon);
 
@@ -78,6 +79,7 @@ async function updateWeatherCurrDB(lat, lon) {
                         // 'coord.lat': { $gte: lat - tolerance, $lte: lat + tolerance }
                     },
                     {
+                        addressName: address,
                         cityName: toUpdate.cityName,
                         lastUpdate: toUpdate.lastUpdate,
                         temp: toUpdate.main.temp,
@@ -120,7 +122,7 @@ async function updateWeatherCurrDB(lat, lon) {
 }
 
 async function getWeatherCurrHTTP(date, newLat, newLon) {
-    let lat = 49.8955;
+    let lat = 49.8954;
     let lon = -97.1385;
     if (newLat !== undefined && newLon !== undefined) {
         lat = newLat;
@@ -184,15 +186,12 @@ function getWeatherIcon(iconID) {
     return result_URL;
 }
 
-async function getWeatherCurrDB(lat, lon) {
-    console.log("getWeatherCurrDB: lat: " + lat);
-    console.log("getWeatherCurrDB: lon: " + lon);
-
-    await updateWeatherCurrDB(lat, lon);
+async function getWeatherCurrDB(lat, lon, address) {
+    await updateWeatherCurrDB(lat, lon, address);
     let currLat = lat;
     let currLon = lon;
     if (lat === undefined || lon === undefined) {
-        currLat = 49.8955;
+        currLat = 49.8954;
         currLon = -97.1385;
     }
 

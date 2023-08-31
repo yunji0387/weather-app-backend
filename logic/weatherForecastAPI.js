@@ -8,7 +8,7 @@ const weatherForecastInfoSchema = new mongoose.Schema({
     cod: Number,
     message: Number,
     cnt: Number,
-    cityName: String,
+    addressName: String,
     lastUpdate: Date,
     city: {
         id: Number,
@@ -61,7 +61,7 @@ const weatherForecastInfoSchema = new mongoose.Schema({
 
 const WeatherForecastInfo = mongoose.model("WeatherForecastInfo", weatherForecastInfoSchema);
 
-async function updateWeatherForecastDB(lat, lon) {
+async function updateWeatherForecastDB(lat, lon, address) {
     let curr = new Date();
     const toUpdate = await getWeatherForecastHTTP(curr, lat, lon);
     if (lat !== undefined && lon !== undefined) {
@@ -80,6 +80,7 @@ async function updateWeatherForecastDB(lat, lon) {
                         cod: parseInt(toUpdate.cod),
                         message: toUpdate.message,
                         cnt: toUpdate.cnt,
+                        addressName: address,
                         lastUpdate: toUpdate.lastUpdate,
                         city: toUpdate.city,
                         forecasts: toUpdate.forecasts,
@@ -101,7 +102,7 @@ async function updateWeatherForecastDB(lat, lon) {
 }
 
 async function getWeatherForecastHTTP(date, newLat, newLon) {
-    let lat = 49.8955;
+    let lat = 49.8954;
     let lon = -97.1385;
     if (newLat !== undefined && newLon !== undefined) {
         lat = newLat;
@@ -169,12 +170,12 @@ function getWeatherIcon(iconID) {
     return result_URL;
 }
 
-async function getWeatherForecastDB(lat, lon) {
-    await updateWeatherForecastDB(lat, lon);
+async function getWeatherForecastDB(lat, lon, address) {
+    await updateWeatherForecastDB(lat, lon, address);
     let currLat = lat;
     let currLon = lon;
     if (lat === undefined || lon === undefined) {
-        currLat = 49.8955;
+        currLat = 49.8954;
         currLon = -97.1385;
     }
 

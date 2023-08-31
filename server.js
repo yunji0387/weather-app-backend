@@ -71,9 +71,12 @@ app.post("/data/weather", async function (req, res) {
             if (token === process.env.ACCESS_KEY) {
                 let lat = req.query.lat;
                 let lon = req.query.lon;
+                let addressName = req.body.address;
 
                 console.log("lat: " + lat);
                 console.log("lon: " + lon);
+                console.log("-----------");
+                console.log("address: " + addressName);
                 console.log("-----------");
                 // console.log("test body lat: " + req.body.lat);
                 // console.log("test body lon: " + req.body.lon);
@@ -88,8 +91,8 @@ app.post("/data/weather", async function (req, res) {
                 // console.log("updated lat: " + formattedLat);
                 // console.log("updated lon: " + formattedLon);
 
-                const weatherCurrData = await weatherCurr.getWeatherCurrDB(lat, lon);
-                const weatherForecastData = await weatherForecast2.getWeatherForecastDB(lat, lon);
+                const weatherCurrData = await weatherCurr.getWeatherCurrDB(lat, lon, addressName);
+                const weatherForecastData = await weatherForecast2.getWeatherForecastDB(lat, lon, addressName);
                 const weatherData = {
                     curr: weatherCurrData,
                     forecast: weatherForecastData
