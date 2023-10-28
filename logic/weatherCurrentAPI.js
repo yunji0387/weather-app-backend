@@ -65,59 +65,56 @@ const WeatherCurrentInfo = mongoose.model("WeatherCurrentInfo", weatherCurrentIn
 async function updateWeatherCurrDB(lat, lon, address) {
     let curr = new Date();
     const toUpdate = await getWeatherCurrHTTP(curr, lat, lon);
-
-    if (lat !== undefined && lon !== undefined) {
-        try {
-            await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherGeocodingDB", { useNewUrlParser: true });
-            if (Object.keys(toUpdate).length > 0) {
-                // const tolerance = 0.0001; // coodinates decimal tolerance
-                const updatedWeather = await WeatherCurrentInfo.findOneAndUpdate(
-                    {
-                        'coord.lon': lon,
-                        'coord.lat': lat
-                        // 'coord.lon': { $gte: lon - tolerance, $lte: lon + tolerance },
-                        // 'coord.lat': { $gte: lat - tolerance, $lte: lat + tolerance }
+    try {
+        await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherGeocodingDB", { useNewUrlParser: true });
+        if (Object.keys(toUpdate).length > 0) {
+            console.log("------------");
+            console.log("time: " + toUpdate.lastUpdate);
+            console.log("------------");
+            const updatedWeather = await WeatherCurrentInfo.findOneAndUpdate(
+                {
+                    'coord.lon': lon,
+                    'coord.lat': lat
+                },
+                {
+                    addressName: address,
+                    cityName: toUpdate.cityName,
+                    lastUpdate: toUpdate.lastUpdate,
+                    temp: toUpdate.main.temp,
+                    description: toUpdate.weather[0].description,
+                    icon: toUpdate.weather[0].icon,
+                    iconURL: toUpdate.iconURL,
+                    weather: toUpdate.weather,
+                    base: toUpdate.base,
+                    main: toUpdate.main,
+                    visibility: toUpdate.visibility,
+                    wind: toUpdate.wind,
+                    rain: toUpdate.rain,
+                    clouds: toUpdate.clouds,
+                    dt: toUpdate.dt,
+                    sys: {
+                        typeCode: toUpdate.sys.type,
+                        id: toUpdate.sys.id,
+                        country: toUpdate.sys.country,
+                        sunrise: toUpdate.sys.sunrise,
+                        sunset: toUpdate.sys.sunset,
                     },
-                    {
-                        addressName: address,
-                        cityName: toUpdate.cityName,
-                        lastUpdate: toUpdate.lastUpdate,
-                        temp: toUpdate.main.temp,
-                        description: toUpdate.weather[0].description,
-                        icon: toUpdate.weather[0].icon,
-                        iconURL: toUpdate.iconURL,
-                        weather: toUpdate.weather,
-                        base: toUpdate.base,
-                        main: toUpdate.main,
-                        visibility: toUpdate.visibility,
-                        wind: toUpdate.wind,
-                        rain: toUpdate.rain,
-                        clouds: toUpdate.clouds,
-                        dt: toUpdate.dt,
-                        sys: {
-                            typeCode: toUpdate.sys.type,
-                            id: toUpdate.sys.id,
-                            country: toUpdate.sys.country,
-                            sunrise: toUpdate.sys.sunrise,
-                            sunset: toUpdate.sys.sunset,
-                        },
-                        timezone: toUpdate.timezone,
-                        id: toUpdate.id,
-                        cod: toUpdate.cod
-                    }, // Fields and values to update
-                    { upsert: true, new: true } // Return the modified document instead of the original
-                );
-                if (updatedWeather) {
-                    console.log("Weather info in MongoDB updated successfully.");
-                } else {
-                    console.log("Error, Weather info in MongoDB failed to update or document not found. Please check the code in weatherCurr.js function: updateWeatherCurrDB.");
-                }
+                    timezone: toUpdate.timezone,
+                    id: toUpdate.id,
+                    cod: toUpdate.cod
+                }, // Fields and values to update
+                { upsert: true, new: true } // Return the modified document instead of the original
+            );
+            if (updatedWeather) {
+                console.log("Weather info in MongoDB updated successfully.");
+            } else {
+                console.log("Error, Weather info in MongoDB failed to update or document not found. Please check the code in weatherCurr.js function: updateWeatherCurrDB.");
             }
-            await mongoose.connection.close();
-        } catch (error) {
-            console.error(error);
-            await mongoose.connection.close();
         }
+        await mongoose.connection.close();
+    } catch (error) {
+        console.error(error);
+        await mongoose.connection.close();
     }
 }
 
@@ -161,13 +158,6 @@ async function getWeatherCurrHTTP(date, newLat, newLon) {
                 id: weatherData.id,
                 cod: weatherData.cod
             };
-            // console.log("------------");
-            // if (typeof result.coord.lat === 'number') {
-            //     console.log('coord.lat is a number:', result.coord.lat);
-            // } else {
-            //     console.log('coord.lat is not a number:', result.coord.lat);
-            // }
-            // console.log("------------");
             console.log("Weather information from API successfully requested.");
             return result;
         } else {
@@ -190,14 +180,6 @@ async function getWeatherCurrDB(lat, lon, address) {
     await updateWeatherCurrDB(lat, lon, address);
     let currLat = lat;
     let currLon = lon;
-    if (lat === undefined || lon === undefined) {
-        currLat = 49.8954;
-        currLon = -97.1385;
-    }
-
-    // console.log("------------");
-    // console.log("++" + currLat + "," + currLon + "++");
-    // console.log("------------");
     let currWeather;
     try {
         await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherGeocodingDB", { useNewUrlParser: true });
@@ -205,20 +187,11 @@ async function getWeatherCurrDB(lat, lon, address) {
             'coord.lon': currLon,
             'coord.lat': currLat
         });
-        // const tolerance = 0.0001; // coodinates decimal tolerance
-
-        // currWeather = await WeatherCurrentInfo.findOne({
-        //     'coord.lon': { $gte: currLon - tolerance, $lte: currLon + tolerance },
-        //     'coord.lat': { $gte: currLat - tolerance, $lte: currLat + tolerance }
-        // });
         mongoose.connection.close();
     } catch (err) {
         console.error(err);
         mongoose.connection.close();
     }
-    // console.log("------------");
-    // console.log(currWeather);
-    // console.log("------------");
     return currWeather;
 }
 

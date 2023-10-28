@@ -64,17 +64,13 @@ const WeatherForecastInfo = mongoose.model("WeatherForecastInfo", weatherForecas
 async function updateWeatherForecastDB(lat, lon, address) {
     let curr = new Date();
     const toUpdate = await getWeatherForecastHTTP(curr, lat, lon);
-    if (lat !== undefined && lon !== undefined) {
         try {
             await mongoose.connect("mongodb+srv://" + process.env.MONGO_USERNAME + ":" + process.env.MONGO_PS + "@cluster0.6gezmfg.mongodb.net/weatherGeocodingDB", { useNewUrlParser: true });
             if (Object.keys(toUpdate).length > 0) {
-                // const tolerance = 0.0001; // coodinates decimal tolerance
                 const updatedWeather = await WeatherForecastInfo.findOneAndUpdate(
                     {
                         'city.coord.lon': lon,
                         'city.coord.lat': lat
-                        // 'city.coord.lon': { $gte: lon - tolerance, $lte: lon + tolerance },
-                        // 'city.coord.lat': { $gte: lat - tolerance, $lte: lat + tolerance }
                     }, // Use lat and lon as a filter
                     {
                         cod: parseInt(toUpdate.cod),
@@ -98,7 +94,6 @@ async function updateWeatherForecastDB(lat, lon, address) {
             console.error(error);
             await mongoose.connection.close();
         }
-    }
 }
 
 async function getWeatherForecastHTTP(date, newLat, newLon) {
@@ -174,10 +169,6 @@ async function getWeatherForecastDB(lat, lon, address) {
     await updateWeatherForecastDB(lat, lon, address);
     let currLat = lat;
     let currLon = lon;
-    if (lat === undefined || lon === undefined) {
-        currLat = 49.8954;
-        currLon = -97.1385;
-    }
 
     let currWeather;
     try {
@@ -186,12 +177,6 @@ async function getWeatherForecastDB(lat, lon, address) {
             'city.coord.lon': currLon,
             'city.coord.lat': currLat
         });
-        // const tolerance = 0.0001; // coodinates decimal tolerance
-
-        // currWeather = await WeatherForecastInfo.findOne({
-        //     'city.coord.lon': { $gte: currLon - tolerance, $lte: currLon + tolerance },
-        //     'city.coord.lat': { $gte: currLat - tolerance, $lte: currLat + tolerance }
-        // });
         mongoose.connection.close();
     } catch (err) {
         console.error(err);
