@@ -31,33 +31,6 @@ app.get("/sample", async function (req, res) {
     res.json(sampleJson.getSampleJson());
 });
 
-// app.post("/data", async function (req, res) {
-//     try {
-//         // Get the key from the request body
-//         const clientKey = req.body.key;
-//         // const testAuth = req.headers.key;
-//         //console.log(testAuth);
-//         const city = req.query.city;
-
-//         // Check if the clientKey matches the secretKey
-//         if (clientKey === process.env.ACCESS_KEY) {
-//             const weatherCurrData = await weatherInfo.getWeatherInfoDB(city);
-//             const weatherForecastData = await weatherForecast.getWeatherForecastDB(city);
-//             const weatherData = {
-//                 curr: weatherCurrData,
-//                 forecast: weatherForecastData
-//             };
-//             res.json(weatherData);
-//         } else {
-//             // If the key doesn't match, return a 401 Unauthorized status
-//             res.status(401).json({ error: "Unauthorized access", check: clientKey });
-//         }
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Failed to fetch weather data." });
-//     }
-// });
-
 app.post("/data/weather", async function (req, res) {
     try {
         const authHeader = req.headers.authorization; // Get the authorization header from the request
@@ -73,23 +46,13 @@ app.post("/data/weather", async function (req, res) {
                 let lon = req.query.lon;
                 let addressName = req.body.address;
 
-                console.log("lat: " + lat);
-                console.log("lon: " + lon);
-                console.log("-----------");
-                console.log("address: " + addressName);
-                console.log("-----------");
-                // console.log("test body lat: " + req.body.lat);
-                // console.log("test body lon: " + req.body.lon);
-
                 if(lat !== undefined && lon !== undefined){
                     lat = parseFloat(lat).toFixed(4);
                     lon = parseFloat(lon).toFixed(4);
+                }else{
+                    lat = 49.8954;
+                    lon = -97.1385;
                 }
-                // const formattedLat = parseFloat(lat).toFixed(3);
-                // const formattedLon = parseFloat(lon).toFixed(3);
-
-                // console.log("updated lat: " + formattedLat);
-                // console.log("updated lon: " + formattedLon);
 
                 const weatherCurrData = await weatherCurr.getWeatherCurrDB(lat, lon, addressName);
                 const weatherForecastData = await weatherForecast2.getWeatherForecastDB(lat, lon, addressName);
